@@ -4,7 +4,7 @@ public class Product {
 
     private int id;
     private double price;
-    private int amount;
+    private int amount = 0;
 
     public Product(int id, double price) {
         this.id = id;
@@ -25,6 +25,14 @@ public class Product {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount += amount;
     }
 
     @Override

@@ -1,33 +1,34 @@
 package model;
-
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
 
 public class Warehouse {
 
-    Hashtable<Product, Integer> inventory = new Hashtable<>();
+    private List<Product> inventory = new ArrayList<>();
 
-    public Warehouse() {}
-
-    public boolean availableinShop(Product product, int amount){
-        return (amount <= inventory.get(product));
+    public Warehouse(List<Product> products) {
+        inventory = products;
     }
 
-    public Map<Product, Integer> getInventory() {
-        return Collections.unmodifiableMap(this.inventory);
+    public void supplyWarehouse(Hashtable<Integer, Integer> supplyChain){
+        Iterator<Integer> itr = supplyChain.keySet().iterator();
+        while (itr.hasNext()) {
+            int key = itr.next();
+            inventory.get(key-1).setAmount(supplyChain.get(key));
+        }
     }
 
-    public void updateInventory(Product product, int amount){
+    private boolean availableinShop(int product, int amount){
+        return (amount <= inventory.get(product).getAmount());
+    }
+
+    public List<Product> getInventory() {
+        return Collections.unmodifiableList(inventory);
+    }
+
+    public void updateInventory(int product, int amount){
         if (availableinShop(product, amount)){
-            inventory.replace(product, inventory.get(product) - amount);
+            inventory.get(product).setAmount(-amount);
         }
         // else return exception
-    }
-
-    public void supplyInventory(Supply supply) {
-        supply.getSupply().forEach((k, v) -> {
-            inventory.replace(k, v+inventory.get(k));
-        });
     }
 }

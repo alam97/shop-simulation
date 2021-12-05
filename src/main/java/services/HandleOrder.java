@@ -20,7 +20,7 @@ public class HandleOrder implements IHandleOrder {
                 this.warehouse = warehouse;
         }
 
-        public void handleOrder(Order order){
+/*        public void handleOrder(Order order){
                 if (warehouse.availableinShop(order.getProduct(), order.getAmount())){
                         warehouse.updateInventory(order.getProduct(), order.getAmount());
                         order.setComplete(true);
@@ -33,7 +33,7 @@ public class HandleOrder implements IHandleOrder {
                         this.wasHandled = false;
                         orderqueue.add(order);
                 }
-        }
+        }*/
 
         public Double getProfit() {
                 return profit;
