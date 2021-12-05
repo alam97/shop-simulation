@@ -9,11 +9,11 @@ public class Order {
     private int amount;
     private Boolean complete = false;
 
-    public Order(Shop shop, Client client, Product product, int time_of_realisation, int amount) {
+    public Order(Shop shop, Client client, Product product, int timeOfRealisation, int amount) {
         this.shop = shop;
         this.client = client;
         this.product = product;
-        this.time_of_realisation = time_of_realisation;
+        this.time_of_realisation = timeOfRealisation;
         this.amount = amount;
     }
 
