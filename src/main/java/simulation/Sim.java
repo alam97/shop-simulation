@@ -18,7 +18,10 @@ public class Sim {
     private List<Client> clients;
     private Map<Integer,List<Client>> clientDays;
     private List<Order> orders = new LinkedList<>();
+    // if day % 30 == 0 then month++
     private int month = 1;
+    // global days
+    private int day = 0;
 
     public Sim(int numOfClients, int duration, ProductTable productTable) {
         clientFactory = new ClientFactory(new ClientGroupPref());
@@ -69,8 +72,7 @@ public class Sim {
     }
 
     private Order makeOrder(Shop shop, Client client, int amount){
-        Order order = new Order(shop, client, new Product(client.getPreference(), amount));
-        return order;
+        return new Order(shop, client, new Product(client.getPreference(), amount));
     }
 
     public void giveRating(){
@@ -78,7 +80,10 @@ public class Sim {
         orders.add(new Order(shop, clients.get(0), new Product(clients.get(0).getPreference(), 1)));
     }
 
+    // de facto ta funkcja powinna byc w shopchoice xD
     public double getRating(Client client){
+        // !!!! Skoro wybor sklepu jest uzalezniony od ocen z poprzednich zakupow w tym samym sklepie
+        // potrzebuje
         //todo za pomoca streama i metody filter wyliczyc ocene dla przekazanego klienta
         // ponizsze zwraca dla danego klienta, srednia jego ocen
         double count = 0;
@@ -89,13 +94,12 @@ public class Sim {
                 n++;
         }
         }
-        orders.forEach(o-> System.out.println(o));
         return count/n;
     }
     
-    public int getYearDay(int monthDay){
-        return monthDay*30 + monthDay;
+    public int getDayofmonth(){
+        int dayofmonth = day - 30*(month-1);
+        return dayofmonth == 0 ? 1 : dayofmonth;
     }
-
 
 }
