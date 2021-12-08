@@ -11,12 +11,14 @@ public class Product {
         this.price = price;
     }
 
-    public int getId() {
-        return id;
+    public Product(int id, double price, int amount) {
+        this.id = id;
+        this.price = price;
+        this.amount = amount;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public int getId() {
+        return id;
     }
 
     public double getPrice() {

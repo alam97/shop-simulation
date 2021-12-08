@@ -5,15 +5,7 @@ public class Pytania {
     /*
 
     Tylko lista pytan odnosnie kodu:
-    * 1. Czy Singleton ma sens? Ponoc odchodzi sie od niego we wzorcach projetkowych
-    * 2. Czy Enumy w tym przypadku maja sens? Czy moze zastapic je Generics? Czyli Class<T>?
-    * 3. Nie jest to aplikacja gdzie uzytkownik cokolwiek robi, czyli Events i Listenery nie maja sensu, prawda?
-    * 4. Czy ma sens komplikowanie Produktow i tworzenie Fabryk itp? W moim rozumieniu zadanie ma na celu pokazanie
-    * strategi rynkowych (czy oplaca sie sprowadzac wiecej towaru czy mniej i dluzej czekac na realizacje).
     * 5. Czy builder do "Order" ma sens? Czyli czy warto dodawac i budowac zamowienie krok po kroku, czy lepiej od razu?
-    * 6. Czy ma sens to, ze mam enumy, ale nie uzywam ich w klasach? Projektujac, zalezalo mi na code reusability.
-    * Tzn: Mam te enumy, ale moge zmienic ich strukture, jednak wartosci przekazywane klasom i tak beda np double czy int,
-    * takze moge usunac enumy i moge przeslac po prostu inne dane
     * 7. Czy jest sens budowac symulacje uzywajac wzorca projektowego "builder"?
     * 8. Jak to z tym handle order? Czy dodac jakies proxy?
     * 9. Czy jak dodam policy do handleorder, czy to nie bedzie za duzo?

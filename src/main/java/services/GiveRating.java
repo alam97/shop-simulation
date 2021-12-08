@@ -1,8 +1,6 @@
 package services;
 
-import interfaces.IGiveRating;
-
-public class GiveRating implements IGiveRating {
+public class GiveRating {
 
     public int giverating(int waittime) {
         if (waittime == 0) {

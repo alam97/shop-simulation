@@ -3,17 +3,15 @@ import java.util.*;
 
 public class Warehouse {
 
-    private List<Product> inventory = new ArrayList<>();
+    private List<Product> inventory;
 
     public Warehouse(List<Product> products) {
         inventory = products;
     }
 
     public void supplyWarehouse(Hashtable<Integer, Integer> supplyChain){
-        Iterator<Integer> itr = supplyChain.keySet().iterator();
-        while (itr.hasNext()) {
-            int key = itr.next();
-            inventory.get(key-1).setAmount(supplyChain.get(key));
+        for (int key : supplyChain.keySet()) {
+            inventory.get(key - 1).setAmount(supplyChain.get(key));
         }
     }
 

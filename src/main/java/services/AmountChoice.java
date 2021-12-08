@@ -1,9 +1,8 @@
 package services;
 
-import interfaces.IAmountChoice;
 import java.util.Random;
 
-public class AmountChoice implements IAmountChoice {
+public class AmountChoice {
 
     public int amountChoice(Random random, double lambda){
         double l = Math.exp(-lambda);
@@ -14,6 +13,6 @@ public class AmountChoice implements IAmountChoice {
             p *= random.nextDouble();
         }
         while (p > l);
-        return k - 1 == 0 ? amountChoice(random, lambda) : k - 1;
+        return k - 1 <= 0 ? amountChoice(random, lambda) : k - 1;
     }
 }

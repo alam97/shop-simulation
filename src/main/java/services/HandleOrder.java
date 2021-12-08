@@ -1,6 +1,4 @@
 package services;
-
-import interfaces.IHandleOrder;
 import model.Order;
 import model.Warehouse;
 
@@ -8,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class HandleOrder implements IHandleOrder {
+public class HandleOrder {
 
         private List<Order> orderqueue = new ArrayList<>(); // queue linkedlist
         private List<Order> processedorders = new ArrayList<>();
@@ -52,3 +50,5 @@ public class HandleOrder implements IHandleOrder {
         }
 
 }
+
+//jeśli jest produkt klient kupuje, odpada z kolejki,rejestrowany profit, order

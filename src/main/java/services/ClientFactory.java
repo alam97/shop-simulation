@@ -1,12 +1,11 @@
 package services;
 
-import interfaces.IClientFactory;
 import model.Client;
 import setvalues.ClientGroupPref;
 
 import java.util.*;
 
-public class ClientFactory implements IClientFactory {
+public class ClientFactory {
     private ClientGroupPref clientGroupPref;
 
     public ClientFactory(ClientGroupPref clientGroupPref) {

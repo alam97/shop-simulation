@@ -4,29 +4,14 @@ public class Order {
     private Shop shop;
     private Client client;
     private Product product;
-    private int time_of_realisation;
-    private int satifaction_rate;
-    private int amount;
+    private int timeOfRealisation;
+    private int satifactionRate = 0;
     private Boolean complete = false;
 
-    public Order(Shop shop, Client client, Product product, int timeOfRealisation, int amount) {
+    public Order(Shop shop, Client client, Product product) {
         this.shop = shop;
         this.client = client;
         this.product = product;
-        this.time_of_realisation = timeOfRealisation;
-        this.amount = amount;
-    }
-
-    public void setSatifaction_rate(int satifaction_rate) {
-        this.satifaction_rate = satifaction_rate;
-    }
-
-    public int getSatifaction_rate() {
-        return satifaction_rate;
-    }
-
-    public Product getProduct() {
-        return product;
     }
 
     public Shop getShop() {
@@ -37,19 +22,47 @@ public class Order {
         return client;
     }
 
-    public int getTime_of_realisation() {
-        return time_of_realisation;
+    public Product getProduct() {
+        return product;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getSatifactionRate() {
+        return satifactionRate;
     }
 
-    public Boolean getComplete() {
+    public void setSatifactionRate(int satifactionRate) {
+        this.satifactionRate = satifactionRate;
+    }
+
+    public int getTimeOfRealisation() {
+        return timeOfRealisation;
+    }
+
+    public void setTimeOfRealisation(int timeOfRealisation) {
+        this.timeOfRealisation = timeOfRealisation;
+    }
+
+    public Boolean isComplete() {
         return complete;
     }
 
-    public void setComplete(Boolean complete) {
+    public void setCompletionStatus(Boolean complete) {
         this.complete = complete;
+    }
+
+//    public int getTimeOfRealization(int currentDay){
+//        return currentDay - dayOfRealization;
+//    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "shop=" + shop +
+                ", client=" + client +
+                ", product=" + product +
+                ", timeOfRealisation=" + timeOfRealisation +
+                ", satifactionRate=" + satifactionRate +
+                ", complete=" + complete +
+                '}';
     }
 }
