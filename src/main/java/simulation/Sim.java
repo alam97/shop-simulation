@@ -4,7 +4,6 @@ import services.AmountChoice;
 import services.ClientFactory;
 import services.DayChoice;
 import setvalues.ClientGroupPref;
-import setvalues.PoissonLambda;
 import setvalues.ProductTable;
 import setvalues.ShopSupplyTable;
 
@@ -30,24 +29,20 @@ public class Sim {
     }
 
 
-
-
-
     public void startSimulation(){
-        System.out.println("= = = = S T A R T  = = = =");
+       // System.out.println("= = = = S T A R T  = = = =");
         assignDaytoClient();
         clientsMakeOrders();
-        System.out.println("Clients and days: " + clientDays);
-        System.out.println("Their orders: " + orders);
+      //  System.out.println("Clients and days: " + clientDays);
+      //  System.out.println("Their orders: " + orders);
 
     }
 
     private void assignDaytoClient(){
         DayChoice dayChoice = new DayChoice();
-        // clients.forEach((c) -> clientDays.put(c, dayChoice.getDay(new Random(), PoissonLambda.INSTANCE.getLambdas().get(c.getPreference()))));
         clientDays = new Hashtable<>();
         for (Client client : clients) {
-            int day = dayChoice.getDay(new Random(), PoissonLambda.INSTANCE.getLambdas().get(client.getPreference())); //uproscic wywolywanie metod, zeby dalo sie bez randoma i bez wskazywania lambdy
+            int day = dayChoice.getDay(new Random(), client.getPreference());
             clientDays.putIfAbsent(day,new ArrayList<>(List.of(client)));
             if(!clientDays.containsKey(day)){
                 clientDays.get(day).add(client);
@@ -56,12 +51,9 @@ public class Sim {
     }
 
 
-
     private void clientsMakeOrders(){
         AmountChoice amountChoice = new AmountChoice();
-        clients.forEach((c) -> orders.add(new Order(shop, c, new Product(c.getPreference(),
-                productTable.getProductTable().get(c.getPreference()), amountChoice.amountChoice(new Random(),  //todo uzupelnic cene juz w samym produkcie
-                PoissonLambda.INSTANCE.getLambdas().get(c.getPreference()))))));
+        clients.forEach((c) -> orders.add(new Order(shop, c, new Product(c.getPreference(), amountChoice.amountChoice(new Random(), c.getPreference())))));
     }
 
     public Shop getShop() {
@@ -69,7 +61,7 @@ public class Sim {
     }
     public void supplyShop(ShopSupplyTable shopSupplyTable){
         warehouse.supplyWarehouse(shopSupplyTable.getSupplyPolicy());
-        System.out.println(warehouse.getInventory());
+     //   System.out.println(warehouse.getInventory());
     }
 
     public List<Client> getClients() {
@@ -77,13 +69,28 @@ public class Sim {
     }
 
     private Order makeOrder(Shop shop, Client client, int amount){
-        Order order = new Order(shop, client, new Product(client.getPreference(), productTable.getProductTable().get(client.getPreference()), amount));
+        Order order = new Order(shop, client, new Product(client.getPreference(), amount));
         return order;
+    }
+
+    public void giveRating(){
+        orders.forEach( o -> o.setSatifactionRate(10));
+        orders.add(new Order(shop, clients.get(0), new Product(clients.get(0).getPreference(), 1)));
     }
 
     public double getRating(Client client){
         //todo za pomoca streama i metody filter wyliczyc ocene dla przekazanego klienta
-        return 0;
+        // ponizsze zwraca dla danego klienta, srednia jego ocen
+        double count = 0;
+        int n = 0;
+        for (Order order: orders) {
+            if(order.getClient().equals(client)){
+                count += order.getSatifactionRate();
+                n++;
+        }
+        }
+        orders.forEach(o-> System.out.println(o));
+        return count/n;
     }
     
     public int getYearDay(int monthDay){

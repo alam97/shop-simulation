@@ -1,10 +1,13 @@
 package services;
 
+import setvalues.PoissonLambda;
+
 import java.util.Random;
 
 public class AmountChoice {
 
-    public int amountChoice(Random random, double lambda){
+    public int amountChoice(Random random, int key){
+        double lambda = PoissonLambda.INSTANCE.getLambdas().get(key);
         double l = Math.exp(-lambda);
         double p = 1.0;
         int k = 0;
@@ -13,6 +16,6 @@ public class AmountChoice {
             p *= random.nextDouble();
         }
         while (p > l);
-        return k - 1 <= 0 ? amountChoice(random, lambda) : k - 1;
+        return k - 1 <= 0 ? amountChoice(random, key) : k - 1;
     }
 }

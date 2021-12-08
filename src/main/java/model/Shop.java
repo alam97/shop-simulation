@@ -1,7 +1,4 @@
 package model;
-
-import interfaces.IHandleOrder;
-import interfaces.IPolicy;
 import setvalues.ProductTable;
 
 import java.util.*;
@@ -25,7 +22,7 @@ public class Shop {
         Iterator<Integer> itr = priceTable.keySet().iterator();
         while (itr.hasNext()) {
             int key = itr.next();
-            catalog.add(new Product(key, Math.round(priceTable.get(key)*markup+priceTable.get(key))));
+            catalog.add(new Product(key));
         }
         catalog.sort(Comparator.comparingInt(Product::getId));
         return Collections.unmodifiableList(catalog);

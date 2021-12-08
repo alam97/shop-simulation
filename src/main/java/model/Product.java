@@ -1,19 +1,22 @@
 package model;
 
+import setvalues.ProductTable;
+
 public class Product {
 
     private int id;
     private double price;
     private int amount = 0;
+    private ProductTable productTable = new ProductTable();
 
-    public Product(int id, double price) {
+    public Product(int id) {
         this.id = id;
-        this.price = price;
+        this.price = productTable.getProductTable().get(id);
     }
 
-    public Product(int id, double price, int amount) {
+    public Product(int id, int amount) {
         this.id = id;
-        this.price = price;
+        this.price = productTable.getProductTable().get(id);
         this.amount = amount;
     }
 
@@ -25,9 +28,7 @@ public class Product {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
+    public void setPricewithMarkup(double markup) { price = price*markup+price; }
 
     public int getAmount() {
         return amount;
