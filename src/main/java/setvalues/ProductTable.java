@@ -1,16 +1,6 @@
 package setvalues;
 
-/* Why Singleton? How I understood the project is that
-* there is a fixed table of values for each product
-* Why? Because each index/product have the exact same price in each shop
-* Therefore, I assumed that by creating a Singleton, I will save on the memory
-* by having one instance of a fixed table that each class has an access to.
-* When it comes to modifying, well, of course it's impossible to modify this table
-* during the run of the program, but we can impose changes after/before running it.
-* This, I assume would also act as a sort of privacy/security shield. */
-import java.util.Collections;
 import java.util.Hashtable;
-import java.util.Map;
 
 public class ProductTable {
 

@@ -6,7 +6,8 @@ public class Order {
     private Product product;
     private int timeOfRealisation;
     private int satifactionRate = 0;
-    private Boolean complete = false;
+    private boolean complete = false;
+    private double markup;
 
     public Order(Shop shop, Client client, Product product) {
         this.shop = shop;
@@ -42,17 +43,20 @@ public class Order {
         this.timeOfRealisation = timeOfRealisation;
     }
 
-    public Boolean isComplete() {
+    public boolean isComplete() {
         return complete;
     }
 
-    public void setCompletionStatus(Boolean complete) {
-        this.complete = complete;
+
+
+    public void setMarkup(double markup) {
+        this.markup = markup;
+    //    product.
     }
 
-//    public int getTimeOfRealization(int currentDay){
-//        return currentDay - dayOfRealization;
-//    }
+    public void setCompletionStatus(boolean complete) {
+        this.complete = complete;
+    }
 
     @Override
     public String toString() {

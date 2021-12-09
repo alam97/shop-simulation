@@ -1,3 +1,4 @@
+import model.Shop;
 import services.AmountChoice;
 import services.DayChoice;
 import setvalues.PoissonLambda;
@@ -16,12 +17,16 @@ public class Main {
         int numOfClient = 4;
         int duration = 365;
         ProductTable productTable = new ProductTable();
-        Sim sim = new Sim(numOfClient, duration, productTable);
-        sim.startSimulation();
+
         List<Integer> supply = Arrays.asList(10, 20, 30, 40, 50, 60, 70, 80);
         ShopSupplyTable shopSupplyTable = new ShopSupplyTable(supply);
-        sim.supplyShop(shopSupplyTable);
-        sim.giveRating();
+
+        Shop  shop = new Shop(productTable,supply );
+        Sim sim = new Sim(numOfClient, duration, shop);
+        sim.startSimulation();
+
+
+
         System.out.println(sim.getRating(sim.getClients().get(0)));
     }
 }

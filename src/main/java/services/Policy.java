@@ -1,7 +1,7 @@
 package services;
 public class Policy {
 
-    public Boolean ifPolicy(Integer inWarehouse, Integer supplied){
+    public boolean ifPolicy(int inWarehouse, int supplied){
         return inWarehouse > supplied;
     }
 }

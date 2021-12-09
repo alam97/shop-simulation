@@ -13,7 +13,6 @@ public class Sim {
 
     private ClientFactory clientFactory;
     private Shop shop;
-    private ProductTable productTable;
     private Warehouse warehouse;
     private List<Client> clients;
     private Map<Integer,List<Client>> clientDays;
@@ -21,24 +20,42 @@ public class Sim {
     // if day % 30 == 0 then month++
     private int month = 1;
     // global days
-    private int day = 0;
+    private int day = 1;
 
-    public Sim(int numOfClients, int duration, ProductTable productTable) {
+    public Sim(int numOfClients, int duration, Shop shop) {
         clientFactory = new ClientFactory(new ClientGroupPref());
         clients = clientFactory.getClients(numOfClients);
-        this.productTable = productTable;
-        shop = new Shop(productTable);
-        warehouse = new Warehouse(shop.getCatalog());
+        this.shop = shop;
+      //  warehouse = not assign!
     }
 
 
     public void startSimulation(){
-       // System.out.println("= = = = S T A R T  = = = =");
+        dayZero();
+        simulateOneMonth();
+    }
+
+    public void dayZero(){
         assignDaytoClient();
         clientsMakeOrders();
-      //  System.out.println("Clients and days: " + clientDays);
-      //  System.out.println("Their orders: " + orders);
+    }
 
+    public void simulateOneDay(){
+        int lday = getDayofmonth();
+        List<Client> clientsToday = clientDays.get(lday);
+        // wybor sklepu
+
+    }
+
+    //todo przegladac klientow i wywolywac dla kazdego handle order
+
+    public void simulateOneMonth(){
+        shop.supplyShop();
+        while (day < 31){
+            simulateOneDay();
+            day++;
+        }
+        System.out.println(shop);
     }
 
     private void assignDaytoClient(){
@@ -62,10 +79,6 @@ public class Sim {
     public Shop getShop() {
         return shop;
     }
-    public void supplyShop(ShopSupplyTable shopSupplyTable){
-        warehouse.supplyWarehouse(shopSupplyTable.getSupplyPolicy());
-     //   System.out.println(warehouse.getInventory());
-    }
 
     public List<Client> getClients() {
         return Collections.unmodifiableList(clients);
@@ -82,19 +95,11 @@ public class Sim {
 
     // de facto ta funkcja powinna byc w shopchoice xD
     public double getRating(Client client){
-        // !!!! Skoro wybor sklepu jest uzalezniony od ocen z poprzednich zakupow w tym samym sklepie
-        // potrzebuje
-        //todo za pomoca streama i metody filter wyliczyc ocene dla przekazanego klienta
-        // ponizsze zwraca dla danego klienta, srednia jego ocen
-        double count = 0;
-        int n = 0;
-        for (Order order: orders) {
-            if(order.getClient().equals(client)){
-                count += order.getSatifactionRate();
-                n++;
-        }
-        }
-        return count/n;
+       return orders.stream()
+                .filter(order -> order.getClient().equals(client))
+                .mapToInt(order -> order.getSatifactionRate())
+                .average() // zwraca optional
+                .orElse(-1);
     }
     
     public int getDayofmonth(){
