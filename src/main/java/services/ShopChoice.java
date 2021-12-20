@@ -17,9 +17,9 @@ public class ShopChoice {
             ageFactor = -lambda*Math.log(1-random.nextDouble());
         }
         // zbieram srednia ocen klienta dla kazdego sklepu, filtrujac liste jego zamowien przez id sklepu
-        double forShop1 = orders.stream().filter( o -> o.getShop().getId() == 1).mapToInt(o-> o.getSatifactionRate()).average().orElse(-1);
-        double forShop2 = orders.stream().filter( o -> o.getShop().getId() == 2).mapToInt(o -> o.getSatifactionRate()).average().orElse(-1);
-        double forShop3 = orders.stream().filter( o -> o.getShop().getId() == 3).mapToInt(o -> o.getSatifactionRate()).average().orElse(-1);
+        double forShop1 = orders.stream().filter( o -> o.getShop().getId() == 1).mapToInt(Order::getSatifactionRate).average().orElse(-1);
+        double forShop2 = orders.stream().filter( o -> o.getShop().getId() == 2).mapToInt(Order::getSatifactionRate).average().orElse(-1);
+        double forShop3 = orders.stream().filter( o -> o.getShop().getId() == 3).mapToInt(Order::getSatifactionRate).average().orElse(-1);
         // stosunek
         double prob1 = forShop1/meanShop1;
         double prob2 = forShop2/meanShop2;
