@@ -11,7 +11,7 @@ import java.util.List;
 
 public class OrderHandler {
 
-    private List<Order> orderqueue = new ArrayList<>(); // queue linkedlist
+    private List<Order> orderqueue = new ArrayList<>();
     private List<Order> processedorders = new ArrayList<>();
     private Warehouse warehouse;
     private Double profit = 0d;
