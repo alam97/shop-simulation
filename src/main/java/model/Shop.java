@@ -4,6 +4,7 @@ import setvalues.ProductTable;
 import setvalues.ShopSupplyTable;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Shop {
 
@@ -11,14 +12,17 @@ public class Shop {
     public static final double POLICY_MARKUP = 0.002;
     public static final double CREDIT = 0.002;
     public static final double BUSINESS_COST = 1000.0;
+    private static AtomicInteger counter = new AtomicInteger(0);
     private ProductTable productTable;
     private Warehouse warehouse;
     private OrderHandler orderHandler;
+    private int id;
 
     public Shop(ProductTable productTable, List<Integer> amounts) {
         this.productTable = productTable;
         warehouse = new Warehouse(createCatalog(),amounts);
         orderHandler = new OrderHandler(warehouse);
+        id = counter.incrementAndGet();
     }
     private List<Product> createCatalog(){
        List<Product> catalog = new ArrayList<>();
@@ -37,6 +41,8 @@ public class Shop {
         return warehouse.getInventory();
     }
     public void handleOrder(Order order) { orderHandler.handleOrder(order);}
+
+    public int getId() { return id; }
 
     public void supplyShop(){
         warehouse.supplyWarehouse();
