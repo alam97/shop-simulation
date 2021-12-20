@@ -1,13 +1,10 @@
 package simulation;
 import model.*;
-import services.AmountChoice;
-import services.ClientFactory;
-import services.DayChoice;
+import services.*;
 import setvalues.ClientGroupPref;
-import setvalues.ProductTable;
-import setvalues.ShopSupplyTable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Sim {
 
@@ -26,7 +23,6 @@ public class Sim {
         clientFactory = new ClientFactory(new ClientGroupPref());
         clients = clientFactory.getClients(numOfClients);
         this.shop = shop;
-      //  warehouse = not assign!
     }
 
 
@@ -48,6 +44,23 @@ public class Sim {
     }
 
     //todo przegladac klientow i wywolywac dla kazdego handle order
+    //todo give rating zliczajac getdayofmonth - day z client day (pytanie: jak dostac sie do tego klienta w hashtable<dzien, lisa klientow>?
+    // rozdzielic symulacje na 3 watki
+    // na ten moment zrobmy shopchoice uniformowy
+
+    public void checkforHandled(){
+        if (orders.stream().noneMatch( o -> o.isComplete())){
+            return;
+        }
+        else {
+            GiveRating rating = new GiveRating();
+          //  orders.stream().filter( o -> o.isComplete() == true).forEach( o -> o.setSatifactionRate(rating(getDayofmonth() - clientDays.)));
+        }
+    }
+
+    public void handleOrders(){
+        orders.stream().filter( o -> !o.isComplete()).forEach( o -> shop.handleOrder(o));
+    }
 
     public void simulateOneMonth(){
         shop.supplyShop();
@@ -97,7 +110,7 @@ public class Sim {
     public double getRating(Client client){
        return orders.stream()
                 .filter(order -> order.getClient().equals(client))
-                .mapToInt(order -> order.getSatifactionRate())
+                .mapToInt(Order::getSatifactionRate)
                 .average() // zwraca optional
                 .orElse(-1);
     }
