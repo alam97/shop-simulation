@@ -14,7 +14,7 @@ public class Main {
 
     public static void main(String[] args){
 
-        int numOfClient = 4;
+        int numOfClient = 2;
         int duration = 365;
         ProductTable productTable = new ProductTable();
 
@@ -25,8 +25,6 @@ public class Main {
         Sim sim = new Sim(numOfClient, duration, shop);
         sim.startSimulation();
 
-
-
-        System.out.println(sim.getRating(sim.getClients().get(0)));
+      //  System.out.println(sim.getRating(sim.getClients().get(0)));
     }
 }
