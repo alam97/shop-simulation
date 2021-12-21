@@ -2,7 +2,7 @@ package services;
 
 public class GiveRating {
 
-    public int giverating(int waittime) {
+    public static int giverating(int waittime) {
         if (waittime == 0) {
             return 5;
         }
