@@ -1,18 +1,24 @@
 package model;
 
+import services.AmountChoice;
+import services.GiveRating;
+
+import java.util.Random;
+
 public class Order {
     private Shop shop;
     private Client client;
     private Product product;
-    private int timeOfRealisation;
-    private int satifactionRate = 0;
-    private boolean complete = false;
+    private int dayOfOrder;
+    private int dayOfCompletion = 0;
     private double markup;
 
-    public Order(Shop shop, Client client, Product product) {
+
+    public Order(Shop shop, Client client, int dayOfOrder) {
         this.shop = shop;
         this.client = client;
-        this.product = product;
+        this.product = new Product(client.getPreference(), AmountChoice.amountChoice(new Random(), client.getPreference()));
+        this.dayOfOrder = dayOfOrder;
     }
 
     public Shop getShop() {
@@ -28,45 +34,42 @@ public class Order {
     }
 
     public int getSatifactionRate() {
-        return satifactionRate;
+       return GiveRating.giverating(getOrderWaitTime());
     }
 
-    public void setSatifactionRate(int satifactionRate) {
-        this.satifactionRate = satifactionRate;
+    private int getOrderWaitTime(){
+        return dayOfCompletion-dayOfOrder;
     }
 
-    public int getTimeOfRealisation() {
-        return timeOfRealisation;
+
+
+    public int getDayOfOrder() {
+        return dayOfOrder;
     }
 
-    public void setTimeOfRealisation(int timeOfRealisation) {
-        this.timeOfRealisation = timeOfRealisation;
+    public void setDayOfCompletion(int dayOfCompletion) {
+        this.dayOfCompletion = dayOfCompletion;
     }
 
     public boolean isComplete() {
-        return complete;
+        return dayOfCompletion>0;
     }
-
-
 
     public void setMarkup(double markup) {
         this.markup = markup;
     //    product.
     }
 
-    public void setCompletionStatus(boolean complete) {
-        this.complete = complete;
-    }
-
     @Override
     public String toString() {
         return "Order{" +
-                "shop=" + shop +
+                "shop=" + shop.getId() +
                 ", client=" + client +
                 ", product=" + product +
-                ", timeOfRealisation=" + timeOfRealisation +
-                ", satifactionRate=" + satifactionRate +
-                ", complete=" + complete +
+                ", day of order=" + dayOfOrder +
+                ", realisation =" + dayOfCompletion +
+                ", satifactionRate=" + getSatifactionRate() +
+                ", complete=" + isComplete() +
                 '}';
     }
 }
