@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class AmountChoice {
 
-    public int amountChoice(Random random, int key){
+    public static int amountChoice(Random random, int key){
         double lambda = PoissonLambda.INSTANCE.getLambdas().get(key);
         double l = Math.exp(-lambda);
         double p = 1.0;
