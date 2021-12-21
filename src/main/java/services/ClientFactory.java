@@ -22,7 +22,7 @@ public class ClientFactory {
     }
 
 
-    private void assignGroup(List<Client> clients){
+    private void assignGroup(List<Client> clients){ //todo czasem powoduje błędy!
         Hashtable<Integer, Integer> clientPref = clientGroupPref.getClientgroups();
         clients.forEach((c) -> {
             int group = ((c.getAge()%100)/10)*10;
