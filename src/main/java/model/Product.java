@@ -30,6 +30,10 @@ public class Product {
 
     public void setPricewithMarkup(double markup) { price = price*markup+price; }
 
+    public double getTotalPrice(){
+        return price * amount;
+    }
+
     public int getAmount() {
         return amount;
     }
