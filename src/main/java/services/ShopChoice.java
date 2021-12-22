@@ -26,9 +26,9 @@ public class ShopChoice {
         double prob3 = forShop3/meanShop3;
     }
 
-    public int chooseShop(){
-        int shop = new Random().nextInt(4);
-        return shop != 0 ? shop : chooseShop();
+    public int chooseShop(int numOfShops){
+        int shop = new Random().nextInt(numOfShops+1);
+        return shop != 0 ? shop : chooseShop(numOfShops);
     }
 
 }
