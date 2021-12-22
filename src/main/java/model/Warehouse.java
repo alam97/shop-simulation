@@ -1,21 +1,19 @@
 package model;
-import setvalues.ShopSupplyTable;
-
 import java.util.*;
 
 public class Warehouse {
 
     private List<Product> inventory;
-    private List<Integer> amounts;
+    private int[] amounts;
 
-    public Warehouse(List<Product> products, List<Integer> amounts) {
+    public Warehouse(List<Product> products, int[] amounts) {
         inventory = products;
         this.amounts=amounts;
     }
 
     public void supplyWarehouse(){
         for (int i = 0; i < 8; i++) {
-           inventory.get(i).setAmount(amounts.get(i));
+           inventory.get(i).setAmount(amounts[i]);
         }
     }
 
@@ -27,7 +25,7 @@ public class Warehouse {
         return Collections.unmodifiableList(inventory);
     }
 
-    public int getSuppliedAmount(int product) { return amounts.get(product);}
+    public int getSuppliedAmount(int product) { return amounts[product];}
 
     public void updateInventory(Product product){
         if (availableinShop(product)){
@@ -37,14 +35,14 @@ public class Warehouse {
     }
 
     private int getAmount ( int productId){
-        return amounts.get(productId-1);
+        return amounts[productId-1];
     }
 
     @Override
     public String toString() {
         return "Warehouse{" +
                 "inventory=" + inventory +
-                ", amounts=" + amounts +
+               // ", amounts=" + amounts +
                 '}';
     }
 }

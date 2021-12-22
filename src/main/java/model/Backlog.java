@@ -1,8 +1,8 @@
 package model;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +29,8 @@ public class Backlog {
     }
 
     public double getShopProfit(double profit, double credit, double businessCost){
-       // Arrays.stream(inventory.stream().map(p -> p.getAmount() * p.getPrice()).collect(Collectors.toList()).toArray()).mapToDouble(Double::doubleValue).sum();
+      //  double[] profits = inventory.stream().map(p -> p.getAmount() * p.getPrice()).collect(Collectors.toList()).toArray();
+
         //double forCredit = p -> p.getAmount()
         return profit - businessCost;
     }
