@@ -6,11 +6,8 @@ import setvalues.ClientGroupPref;
 import java.util.*;
 
 public class ClientFactory {
-    private ClientGroupPref clientGroupPref;
-
-    public ClientFactory(ClientGroupPref clientGroupPref) {
-        this.clientGroupPref = clientGroupPref;
-    }
+    private ClientGroupPref clientGroupPref = new ClientGroupPref();
+    public ClientFactory() {}
 
     public List<Client> getClients(int num) {
         List<Client> clients = new ArrayList<>();
@@ -22,10 +19,14 @@ public class ClientFactory {
     }
 
 
-    private void assignGroup(List<Client> clients){ //todo czasem powoduje błędy!
+    private void assignGroup(List<Client> clients){
         Hashtable<Integer, Integer> clientPref = clientGroupPref.getClientgroups();
         clients.forEach((c) -> {
-            int group = ((c.getAge()%100)/10)*10;
+            int group = (int)Math.round(c.getAge()/10.0) * 10;
+            if (group >= 100){
+                group = 90;
+            }
+            System.out.println(group);
             c.setPreference(clientPref.get(group));
         });
     }

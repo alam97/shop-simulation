@@ -1,7 +1,4 @@
 package model;
-/* Single Class Responsibility:
-    Model.Client is just responsible for itself, the entity
- */
 
 import java.util.Random;
 

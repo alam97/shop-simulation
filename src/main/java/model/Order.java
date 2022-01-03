@@ -11,8 +11,6 @@ public class Order {
     private Product product;
     private int dayOfOrder;
     private int dayOfCompletion = 0;
-    private double markup;
-
 
     public Order(Shop shop, Client client, int dayOfOrder) {
         this.shop = shop;
@@ -41,8 +39,6 @@ public class Order {
         return dayOfCompletion-dayOfOrder;
     }
 
-
-
     public int getDayOfOrder() {
         return dayOfOrder;
     }
@@ -53,11 +49,6 @@ public class Order {
 
     public boolean isComplete() {
         return dayOfCompletion>0;
-    }
-
-    public void setMarkup(double markup) {
-        this.markup = markup;
-    //    product.
     }
 
     @Override

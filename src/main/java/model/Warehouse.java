@@ -34,7 +34,7 @@ public class Warehouse {
         // else return exception
     }
 
-    private int getAmount ( int productId){
+    private int getAmount (int productId){
         return amounts[productId-1];
     }
 

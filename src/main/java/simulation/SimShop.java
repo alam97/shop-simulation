@@ -2,15 +2,14 @@ package simulation;
 
 import model.Client;
 import model.Order;
-import model.Product;
 import model.Shop;
-import services.AmountChoice;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class SimShop implements Runnable{
 
@@ -18,6 +17,7 @@ public class SimShop implements Runnable{
     private List<Client> clients;
     private List<Order> orders = new LinkedList<>();
     private BlockingQueue<Order> orderQueue = new LinkedBlockingQueue<>();
+    private AtomicBoolean running = new AtomicBoolean(false);
     private Thread thread;
 
     public SimShop(Shop shop, List<Client> clients) {
@@ -26,20 +26,31 @@ public class SimShop implements Runnable{
         thread = new Thread(this);
     }
 
+    public void newClients(List<Client> newClients) {
+        if (clients != null || !clients.isEmpty()) {
+            clients.clear();
+        }
+        clients.addAll(orderQueue.stream().map(Order::getClient).collect(Collectors.toList()));
+        if (newClients != null) {
+            clients.addAll(newClients);
+        }
+    }
+
     public void startHandlingOrders(){
         thread.start();
     }
 
-    public void stopSimulation() { thread.interrupt();}
 
-    public void queueOrder(Order order){
-    //    System.out.println("======== " + order);
+    public void stop() {
+        running.set(true);
+    }
+
+    public synchronized void queueOrder(Order order){
         try {
             orderQueue.put(order);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-     //   System.out.println(orderQueue);
     }
 
     public List<Client> getClients() {
@@ -50,18 +61,31 @@ public class SimShop implements Runnable{
         return shop;
     }
 
-    public BlockingQueue<Order> getOrderQueue() {
-        return orderQueue;
+    public synchronized void addToBacklog(){
+        shop.getBacklog().addOrdersToBacklog(shop.getOrderHandler().getProcessedorders());
+    }
+
+    public List<Order> ordersPerClient(Client client){
+       return shop.getOrderHandler().getProcessedorders().stream().filter(o -> o.getClient().equals(client)).collect(Collectors.toList());
     }
 
     @Override
     public void run() {
-        while (Sim.day < Sim.finalday){
+        while (!running.get()) {
+            if (Sim.day == Sim.finalDay+1){
+                stop();
+            }
             try {
-                Order order = orderQueue.take();
-                shop.handleOrder(order);
-                System.out.println(order);
+                if ( orderQueue.isEmpty()) {
+                    continue;
+                }
+                else {
+                    Order order = orderQueue.take();
+                    shop.handleOrder(order);
+                }
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 e.printStackTrace();
             }
         }
@@ -71,20 +95,11 @@ public class SimShop implements Runnable{
     public String toString() {
         return "SimShop{" +
                 "shop=" + shop +
-                ", clients=" + clients +
+             //   ", clients=" + clients +
+            //    ", orders=" + shop.getOrderHandler() +
+                ", orderQueue=" + orderQueue + System.lineSeparator() +
                 ", orders=" + shop.getOrderHandler() +
-                ", orderQueue=" + orderQueue +
                 '}';
     }
 
-    /*    public void newClients(List<Client> c){
-        clients.clear();
-        clients.addAll(c);
-    }
-
-    // clients make orders
-    private void clientsMakeOrders(){
-        AmountChoice amountChoice = new AmountChoice();
-        clients.forEach((c) -> orders.add(new Order(shop, c, Sim.getDayofmonth())));
-    }*/
 }

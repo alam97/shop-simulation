@@ -1,38 +1,71 @@
 package model;
 
-import java.lang.reflect.Array;
+import simulation.Sim;
+
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 public class Backlog {
 
-    private List<ArrayList<Order>> allOrders;
-    private double profitPerMonth = 0d;
-    private double totalProfit = 0d;
-    private ArrayList<Product> inventory;
+    private int id;
+    private Hashtable<Integer, List<Order>> allOrders;
+    private double[] profitPerMonth = new double[Sim.getMonthDuration()];
+    private List<Product> inventory;
+    private List<Product> supplied;
+    private double supplyCreditCost;
+    private double scale = Math.pow(10, 2);
+    private int count = 0;
 
-    public Backlog() {
-        allOrders = new ArrayList<>();
+    public Backlog(int id, List<Product> supplies) {
+        this.id = id;
+        allOrders = new Hashtable<>();
         inventory = new ArrayList<>();
+        supplied = supplies;
+        supplyCreditCost = supplied.stream().mapToDouble(product -> product.getTotalPrice()).sum() * Shop.CREDIT;
     }
 
-    // na poczatku miesiaca pobieram liste z magazynu, zeby wiedziec ile produktow zamowiono
-    public void loadInventory(ArrayList<Product> warehouseInventory){
+    // na koniec miesiaca pobieram liste z magazynu, zeby wiedziec ile jest produktow na stanie
+    public void loadInventory(List<Product> warehouseInventory){
         inventory = warehouseInventory;
     }
 
-    public void addOrdersToBacklog(int key, ArrayList<Order> orders){
+    public void addOrdersToBacklog(List<Order> orders){
         // wykonywane na koniec miesiaca
-        allOrders.add(key, orders);
+        allOrders.put(Sim.month, orders);
+        profitPerMonth[Sim.month-1] = orders.stream().mapToDouble(o -> o.getProduct().getTotalPrice()).sum();
     }
 
-    public double getShopProfit(double profit, double credit, double businessCost){
-      //  double[] profits = inventory.stream().map(p -> p.getAmount() * p.getPrice()).collect(Collectors.toList()).toArray();
+    public double getShopProfit(boolean endOfYear){
+     //   double supplyCreditCost = supplied.stream().mapToDouble(product -> product.getTotalPrice()).sum() * Shop.CREDIT;
+        double profitFromOrders = 0d;
+        if (!endOfYear) {
+            profitFromOrders = profitPerMonth[Sim.month-1];
+        }
+        else {
+            profitFromOrders = allOrders.values().stream().mapToDouble(l -> l.stream().mapToDouble(o -> o.getProduct().getTotalPrice()).sum()).sum();
+        }
+        double profit = supplyCreditCost + profitFromOrders - Shop.BUSINESS_COST;
+        // zaokraglam do 2 miejsc po przecinku dla estetyki
+        return Math.round(profit * scale) / scale;
+    }
 
-        //double forCredit = p -> p.getAmount()
-        return profit - businessCost;
+    private int numberOfAllOrders(){
+        Set<Integer> months = allOrders.keySet();
+        for (Integer key: months){
+            count += allOrders.get(key).size();
+        }
+        return count;
+    }
+
+    @Override
+    public String toString() {
+        return "============= END OF MONTH " + Sim.month + " REPORT " +  System.lineSeparator() +
+                "Shop number # " + id + System.lineSeparator() +
+                " - number of all orders = " + numberOfAllOrders() +  System.lineSeparator() +
+                " - totalProfit =" + getShopProfit(false) +  System.lineSeparator() +
+                " - Inventory =" + inventory  + System.lineSeparator() + " " ;
     }
 
 }

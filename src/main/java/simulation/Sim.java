@@ -2,7 +2,6 @@ package simulation;
 
 import model.*;
 import services.*;
-import setvalues.ClientGroupPref;
 import setvalues.ProductTable;
 
 import java.util.*;
@@ -10,30 +9,29 @@ import java.util.*;
 public class Sim {
 
     private ClientFactory clientFactory;
-    private Shop shop;
     private List<Client> clients;
-    private Map<Integer, List<Client>> clientDays;
+    private Map<Integer, List<Client>> clientDays = new Hashtable<>();
     private List<Shop> shops = new ArrayList<>();
-    private Hashtable<Integer, List<Client>> clientsShop;
+    private Hashtable<Integer, List<Client>> clientsShop = new Hashtable<>();
     private List<SimShop> simulations = new ArrayList<>();
-    // if day % 30 == 0 then month++
-    // dlaczego statyczne? zeby byly globalnie dostepne
     public static int month = 1;
-    // global days
     public static int day = 1;
-    public static int finalday = 0;
+    public static int finalDay = 0;
+    private boolean flag = false;
 
+/*
     public Sim(int numOfClients, int duration, Shop shop) {
         clientFactory = new ClientFactory(new ClientGroupPref());
         clients = clientFactory.getClients(numOfClients);
         finalday = duration;
         this.shop = shop;
     }
+*/
 
     public Sim(int numOfClients, int duration, int[][] supplies) {
-        clientFactory = new ClientFactory(new ClientGroupPref());
+        clientFactory = new ClientFactory();
         clients = clientFactory.getClients(numOfClients);
-        finalday = duration;
+        finalDay = duration;
         createShops(supplies);
         System.out.println(shops);
     }
@@ -50,57 +48,86 @@ public class Sim {
         }
     }
 
-    public void startSimulation() {
-        dayZero();
-        simulateOneMonth();
-    }
-
-    public void simulateOneMonth() {
-        shops.forEach(Shop::supplyShop);
-        System.out.println(clientDays);
-        while (getDayofmonth() < 31) {
-            simulateOneDay();
-            day++;
+    private void assignNewClients(){
+        for (int i = 0; i < simulations.size() ; i++) {
+            simulations.get(i).newClients(clientsShop.get(i+1));
         }
-        simulations.forEach(s -> System.out.println(s.toString()));
-    //    simulations.forEach(s -> s.stopSimulation());
     }
 
-    public void dayZero() {
-        assignDaytoClient();
-        assignShoptoClient();
-        System.out.println("Klienci i sklep:" + clientsShop);
-        distributeThreads();
-        System.out.println(simulations);
+
+    public void startSimulation() {
+        System.out.println(">>>>>>>>>>>>>>> STARTING SIMULATION");
+        System.out.println(getMonthDuration());
+        dayZero();
+        simulation();
+    }
+
+    private synchronized void simulation(){
         simulations.forEach(SimShop::startHandlingOrders);
-       // shops.forEach( s -> s.startHandlingOrders());
-       // shop.startHandlingOrders();
+        flag = month <= getMonthDuration();
+        while (flag) {
+            simulateOneMonth();
+        }
     }
 
-    public void simulateOneDay() {
+    public synchronized void simulateOneMonth() {
+            if ( month > 1 ){
+                assignDaytoClient();
+                assignShoptoClient(false);
+                assignNewClients();
+    //            System.out.println("Klienci i sklep:" + clientsShop);
+            }
+            simulations.forEach( s -> s.getShop().supplyShop());
+    //        System.out.println("Klienci i ich dzien: " + clientDays);
+            while (getDayofmonth() < 31) {
+                if (day == finalDay+1) {
+                    System.out.println(">>>>>>>>>>>>>>> END OF SIMULATION");
+                    flag = false;
+                    return;
+                }
+                simulateOneDay();
+                day++;
+            }
+            endOfMonth();
+         //   simulations.forEach(s -> s.join());
+            month++;
+    }
+
+   private void endOfMonth(){
+        simulations.forEach(s -> s.addToBacklog());
+        simulations.forEach(s -> s.getShop().getBacklog().loadInventory(s.getShop().getCatalog()));
+        // raport na koniec miesiaca
+        simulations.forEach(s -> System.out.println(s.getShop().getBacklog()));
+    }
+
+    public synchronized void simulateOneDay() {
         int lday = getDayofmonth();
         if(!clientDays.containsKey(lday)){
-            System.out.println("Brak klientow: " + lday);
+            //    System.out.println("Brak klientow: " + lday);
             return;
         }
         List<Client> clientsToday = clientDays.get(lday);
-        //System.out.println("================ About to start ordering for shops");
-    //    System.out.println("==== Czy shopy w simie maja klientow??? ");
-     //   simulations.forEach(s -> System.out.println(s.getShop() + " "  + s.getClients()));
-     //   System.out.println("Czy w dzisiejszym dniu ktos ma klienta? ");
         for (Client client : clientsToday) {
             if(simulations.stream().noneMatch(s -> s.getClients() != null && s.getClients().contains(client))){
                 continue;
             }
-            simulations.stream().filter(s -> s.getClients() != null && s.getClients().contains(client)).forEach(sim -> sim.queueOrder(new Order(sim.getShop(), client, lday)));
+            // Tutaj klienci skladaja zamowienia
+            simulations.stream().filter(s -> s.getClients() != null && s.getClients().contains(client))
+                                .forEach(sim -> sim.queueOrder(new Order(sim.getShop(), client, lday)));
         }
-     //   clientsToday.forEach(c-> shop.queueOrder(new Order(shop, c, lday)));
-        // wybor sklepu
+    }
+
+    public void dayZero() {
+        assignDaytoClient();
+        assignShoptoClient(true);
+        System.out.println("Klienci i sklep:" + clientsShop);
+        distributeThreads();
+     //   simulations.forEach(SimShop::startHandlingOrders);
     }
 
     private void assignDaytoClient() {
         DayChoice dayChoice = new DayChoice();
-        clientDays = new Hashtable<>();
+        clientDays.clear();
         for (Client client : clients) {
             int day = dayChoice.getDay(new Random(), client.getPreference());
             clientDays.putIfAbsent(day, new ArrayList<>(List.of(client)));
@@ -110,12 +137,23 @@ public class Sim {
         }
     }
 
-    private void assignShoptoClient(){
+    private void assignShoptoClient(boolean isDayZero){
         ShopChoice shopChoice = new ShopChoice();
-        clientsShop = new Hashtable<>();
-        System.out.println(clients);
+        clientsShop.clear();
+        int id = 0;
         for (Client client: clients) {
-            int id = shopChoice.chooseShop(shops.size());
+            if (isDayZero) {
+                id = shopChoice.chooseShop(shops.size());
+            }
+            else {
+                List<Order> clientsOrders = new ArrayList<>();
+                clientsOrders.addAll(simulations.get(0).ordersPerClient(client));
+                clientsOrders.addAll(simulations.get(1).ordersPerClient(client));
+                clientsOrders.addAll(simulations.get(2).ordersPerClient(client));
+                id = shopChoice.chooseShop(client.getPreference(), simulations.get(0).getShop().meanStars(),
+                                            simulations.get(1).getShop().meanStars(), simulations.get(2).getShop().meanStars(),
+                                            clientsOrders);
+            }
             if (clientsShop.containsKey(id)){
                 clientsShop.get(id).add(client);
                 continue;
@@ -124,13 +162,13 @@ public class Sim {
         }
     }
 
-    public List<Client> getClients() {
-        return Collections.unmodifiableList(clients);
-    }
-
     public static int getDayofmonth() {
         int dayofmonth = day - 30 * (month - 1);
         return dayofmonth == 0 ? 1 : dayofmonth;
+    }
+
+    public static int getMonthDuration() {
+        return (int)Math.ceil(finalDay /30)+1;
     }
 
 }
