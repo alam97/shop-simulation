@@ -24,10 +24,6 @@ public class Product {
         return id;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
     public void setPricewithMarkup(double markup) { price = price*markup+price; }
 
     public double getTotalPrice(){
