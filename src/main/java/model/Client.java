@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Client {
     private int age;
-    // preference = the id of the product
+    // preference = id produktu
     private int preference;
 
     public Client() {
