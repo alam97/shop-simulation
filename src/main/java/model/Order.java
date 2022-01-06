@@ -39,10 +39,6 @@ public class Order {
         return dayOfCompletion-dayOfOrder;
     }
 
-    public int getDayOfOrder() {
-        return dayOfOrder;
-    }
-
     public void setDayOfCompletion(int dayOfCompletion) {
         this.dayOfCompletion = dayOfCompletion;
     }
