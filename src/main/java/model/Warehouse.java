@@ -31,7 +31,6 @@ public class Warehouse {
         if (availableinShop(product)){
             inventory.get(product.getId()-1).setAmount(-product.getAmount());
         }
-        // else return exception
     }
 
     private int getAmount (int productId){
@@ -42,7 +41,6 @@ public class Warehouse {
     public String toString() {
         return "Warehouse{" +
                 "inventory=" + inventory +
-               // ", amounts=" + amounts +
                 '}';
     }
 }
