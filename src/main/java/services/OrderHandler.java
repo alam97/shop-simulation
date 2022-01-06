@@ -36,11 +36,11 @@ public class OrderHandler {
         this.processedorders.add(order);
     }
 
-    private void handleOldOrders(){
+/*    private void handleOldOrders(){
         List<Order> oldOrders = new ArrayList<>(orderqueue);
         orderqueue.clear();
         oldOrders.forEach(o -> handleOrder(o));
-    }
+    }*/
 
     public double getMeanStars() {
         return processedorders.stream().mapToInt(o -> o.getSatifactionRate()).average().orElse(-1);
