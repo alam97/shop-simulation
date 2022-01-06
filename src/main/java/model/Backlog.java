@@ -38,7 +38,6 @@ public class Backlog {
     }
 
     public double getShopProfit(boolean endOfYear){
-     //   double supplyCreditCost = supplied.stream().mapToDouble(product -> product.getTotalPrice()).sum() * Shop.CREDIT;
         double profitFromOrders = 0d;
         if (!endOfYear) {
             profitFromOrders = profitPerMonth[Sim.month-1];
